@@ -1,0 +1,74 @@
+flowchart LR
+
+    U[Client Application]
+
+    U --> A[API Gateway]
+
+    A --> B[Authentication Middleware]
+    B --> C[Authorization Middleware]
+    C --> D[Rate Limiter]
+    D --> E[Request Validation]
+
+    E --> F[Controller Layer]
+
+    F --> G[Service Layer]
+
+    G --> H[Business Logic]
+
+    H --> I[Repository Layer]
+
+    I --> J[(MySQL Database)]
+
+    G --> K[(Redis Cache)]
+
+    G --> L[Kafka Producer]
+
+    L --> M[Event Streaming]
+
+    G --> N[RabbitMQ]
+
+    N --> O[Background Workers]
+
+    O --> P[Email Service]
+    O --> Q[SMS Service]
+    O --> R[Notification Service]
+
+    J --> S[Audit Logs]
+
+    H --> T[Response Builder]
+
+    T --> U1[JSON Response]
+
+    U1 --> U
+
+    subgraph Security
+        B
+        C
+        D
+        E
+    end
+
+    subgraph Application
+        F
+        G
+        H
+        I
+    end
+
+    subgraph Data_Layer
+        J
+        K
+    end
+
+    subgraph Async_Processing
+        L
+        M
+        N
+        O
+    end
+
+    subgraph External_Services
+        P
+        Q
+        R
+    end

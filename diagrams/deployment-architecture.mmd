@@ -1,0 +1,203 @@
+flowchart TB
+
+    USERS[Global Users]
+
+    USERS --> DNS[Route 53 DNS]
+
+    DNS --> CDN[CloudFront CDN]
+
+    CDN --> ALB[Application Load Balancer]
+
+    subgraph AWS_Region
+
+        subgraph Availability_Zone_A
+
+            EKS1[EKS Node Group A]
+
+            POD1[Frontend Pod]
+            POD2[API Pod]
+            POD3[Auth Service]
+
+        end
+
+        subgraph Availability_Zone_B
+
+            EKS2[EKS Node Group B]
+
+            POD4[Frontend Pod]
+            POD5[API Pod]
+            POD6[Order Service]
+
+        end
+
+        subgraph Availability_Zone_C
+
+            EKS3[EKS Node Group C]
+
+            POD7[Payment Service]
+            POD8[Inventory Service]
+            POD9[Notification Service]
+
+        end
+
+    end
+
+    ALB --> POD1
+    ALB --> POD4
+
+    POD2 --> DB[(RDS MySQL Primary)]
+
+    POD5 --> DB
+
+    POD6 --> DB
+
+    subgraph Database_High_Availability
+
+        DB
+
+        RR1[(Read Replica 1)]
+
+        RR2[(Read Replica 2)]
+
+    end
+
+    DB --> RR1
+    DB --> RR2
+
+    subgraph Cache_Layer
+
+        REDIS[(Redis Cluster)]
+
+    end
+
+    POD2 --> REDIS
+    POD5 --> REDIS
+    POD6 --> REDIS
+    POD7 --> REDIS
+
+    subgraph Event_Streaming
+
+        KAFKA[Kafka Cluster]
+
+        BROKER1[Broker 1]
+        BROKER2[Broker 2]
+        BROKER3[Broker 3]
+
+    end
+
+    KAFKA --> BROKER1
+    KAFKA --> BROKER2
+    KAFKA --> BROKER3
+
+    POD6 --> KAFKA
+    POD7 --> KAFKA
+    POD8 --> KAFKA
+
+    subgraph Message_Queue
+
+        RMQ[RabbitMQ Cluster]
+
+        EMAIL[Email Worker]
+
+        SMS[SMS Worker]
+
+        PUSH[Push Worker]
+
+    end
+
+    POD9 --> RMQ
+
+    RMQ --> EMAIL
+    RMQ --> SMS
+    RMQ --> PUSH
+
+    subgraph Object_Storage
+
+        S3[AWS S3]
+
+        MEDIA[Images & Assets]
+
+    end
+
+    S3 --> MEDIA
+
+    CDN --> S3
+
+    subgraph CI_CD
+
+        GITHUB[GitHub Repository]
+
+        ACTIONS[GitHub Actions]
+
+        ECR[Amazon ECR]
+
+    end
+
+    GITHUB --> ACTIONS
+
+    ACTIONS --> ECR
+
+    ECR --> EKS1
+    ECR --> EKS2
+    ECR --> EKS3
+
+    subgraph Monitoring
+
+        PROM[Prometheus]
+
+        GRAF[Grafana]
+
+        OTEL[OpenTelemetry]
+
+        CLOUDWATCH[CloudWatch]
+
+    end
+
+    POD2 --> PROM
+    POD5 --> PROM
+    POD6 --> PROM
+    POD7 --> PROM
+    POD8 --> PROM
+    POD9 --> PROM
+
+    PROM --> GRAF
+
+    PROM --> OTEL
+
+    OTEL --> CLOUDWATCH
+
+    subgraph Security
+
+        WAF[AWS WAF]
+
+        IAM[AWS IAM]
+
+        SECRETS[AWS Secrets Manager]
+
+    end
+
+    USERS --> WAF
+
+    POD2 --> IAM
+    POD5 --> IAM
+
+    POD2 --> SECRETS
+    POD5 --> SECRETS
+
+    subgraph Disaster_Recovery
+
+        BACKUP[RDS Backups]
+
+        SNAPSHOT[EBS Snapshots]
+
+        MULTI_AZ[Multi-AZ Failover]
+
+    end
+
+    DB --> BACKUP
+
+    EKS1 --> SNAPSHOT
+    EKS2 --> SNAPSHOT
+    EKS3 --> SNAPSHOT
+
+    DB --> MULTI_AZ

@@ -1,0 +1,158 @@
+flowchart TB
+
+    U[Users]
+
+    U --> LB[Global Load Balancer]
+
+    LB --> API1[API Server 1]
+    LB --> API2[API Server 2]
+    LB --> API3[API Server 3]
+
+    subgraph Application_Layer
+
+        API1
+        API2
+        API3
+
+    end
+
+    API1 --> REDIS[(Redis Cluster)]
+    API2 --> REDIS
+    API3 --> REDIS
+
+    API1 --> KAFKA[Kafka Cluster]
+    API2 --> KAFKA
+    API3 --> KAFKA
+
+    subgraph Service_Layer
+
+        S1[User Service]
+        S2[Order Service]
+        S3[Payment Service]
+        S4[Inventory Service]
+        S5[Notification Service]
+
+    end
+
+    API1 --> S1
+    API1 --> S2
+
+    API2 --> S3
+    API2 --> S4
+
+    API3 --> S5
+
+    subgraph Database_Layer
+
+        DB1[(Primary Database)]
+        DB2[(Read Replica 1)]
+        DB3[(Read Replica 2)]
+
+    end
+
+    DB1 --> DB2
+    DB1 --> DB3
+
+    S1 --> DB1
+    S2 --> DB1
+    S3 --> DB1
+    S4 --> DB1
+    S5 --> DB1
+
+    S1 --> DB2
+    S2 --> DB2
+
+    S3 --> DB3
+    S4 --> DB3
+
+    subgraph Event_Driven_Communication
+
+        KAFKA --> C1[Analytics Consumer]
+        KAFKA --> C2[Notification Consumer]
+        KAFKA --> C3[Search Consumer]
+        KAFKA --> C4[Audit Consumer]
+
+    end
+
+    subgraph Async_Processing
+
+        RMQ[RabbitMQ]
+
+        W1[Email Worker]
+        W2[SMS Worker]
+        W3[Background Worker]
+
+    end
+
+    S5 --> RMQ
+
+    RMQ --> W1
+    RMQ --> W2
+    RMQ --> W3
+
+    subgraph Storage
+
+        S3STORE[AWS S3]
+
+        CDN[CloudFront CDN]
+
+    end
+
+    S3STORE --> CDN
+
+    subgraph Observability
+
+        PROM[Prometheus]
+
+        GRAF[Grafana]
+
+        OTEL[OpenTelemetry]
+
+    end
+
+    API1 --> PROM
+    API2 --> PROM
+    API3 --> PROM
+
+    S1 --> PROM
+    S2 --> PROM
+    S3 --> PROM
+    S4 --> PROM
+    S5 --> PROM
+
+    PROM --> GRAF
+    PROM --> OTEL
+
+    subgraph High_Availability
+
+        AZ1[Availability Zone A]
+
+        AZ2[Availability Zone B]
+
+        AZ3[Availability Zone C]
+
+    end
+
+    API1 --> AZ1
+    API2 --> AZ2
+    API3 --> AZ3
+
+    DB1 --> AZ1
+    DB2 --> AZ2
+    DB3 --> AZ3
+
+    subgraph Reliability
+
+        RETRY[Retry Mechanism]
+
+        DLQ[Dead Letter Queue]
+
+        IDEMPOTENCY[Idempotent Processing]
+
+    end
+
+    RMQ --> RETRY
+
+    RETRY --> DLQ
+
+    KAFKA --> IDEMPOTENCY

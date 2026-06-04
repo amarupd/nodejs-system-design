@@ -1,0 +1,103 @@
+flowchart LR
+
+    A[Producer Service]
+
+    A --> B[Exchange]
+
+    B --> C[Direct Exchange]
+    B --> D[Topic Exchange]
+    B --> E[Fanout Exchange]
+
+    C --> F[Order Queue]
+
+    D --> G[Notification Queue]
+
+    D --> H[Email Queue]
+
+    E --> I[Audit Queue]
+
+    E --> J[Analytics Queue]
+
+    F --> K[Order Worker]
+
+    G --> L[Notification Worker]
+
+    H --> M[Email Worker]
+
+    I --> N[Audit Worker]
+
+    J --> O[Analytics Worker]
+
+    K --> P[Database Update]
+
+    L --> Q[Push Notification]
+
+    M --> R[Email Provider]
+
+    N --> S[Audit Storage]
+
+    O --> T[Analytics Platform]
+
+    subgraph Retry_Architecture
+
+        U[Failed Message]
+
+        V[Retry Queue]
+
+        W[Retry Worker]
+
+    end
+
+    K --> U
+    L --> U
+    M --> U
+
+    U --> V
+
+    V --> W
+
+    W --> F
+    W --> G
+    W --> H
+
+    subgraph Dead_Letter_Queue
+
+        X[DLQ]
+
+        Y[Manual Investigation]
+
+    end
+
+    U --> X
+
+    X --> Y
+
+    subgraph Monitoring
+
+        Z[Queue Depth]
+
+        AA[Consumer Count]
+
+        AB[ACK Rate]
+
+        AC[DLQ Growth]
+
+    end
+
+    F --> Z
+    G --> AA
+    H --> AB
+    X --> AC
+
+    subgraph RabbitMQ_Cluster
+
+        AD[RabbitMQ Node 1]
+
+        AE[RabbitMQ Node 2]
+
+        AF[RabbitMQ Node 3]
+
+    end
+
+    AD --> AE
+    AE --> AF

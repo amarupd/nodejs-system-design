@@ -1,0 +1,212 @@
+flowchart TB
+
+    U[Fantasy User]
+
+    U --> A[Web / Mobile App]
+
+    A --> B[API Gateway]
+
+    B --> C[User Service]
+    B --> D[Match Service]
+    B --> E[Contest Service]
+    B --> F[Team Service]
+    B --> G[Wallet Service]
+    B --> H[Leaderboard Service]
+
+    subgraph Match_Data_Ingestion
+
+        I[Sports Data Provider]
+
+        J[Kafka Match Events]
+
+        K[Scoring Engine]
+
+    end
+
+    I --> J
+
+    J --> K
+
+    subgraph Fantasy_Point_Engine
+
+        L[Runs]
+
+        M[Wickets]
+
+        N[Catches]
+
+        O[Bonus Points]
+
+    end
+
+    L --> K
+    M --> K
+    N --> K
+    O --> K
+
+    subgraph Leaderboard_System
+
+        P[Redis Sorted Sets]
+
+        Q[Leaderboard API]
+
+    end
+
+    K --> P
+
+    P --> Q
+
+    H --> Q
+
+    subgraph Contest_Management
+
+        R[Contest Creation]
+
+        S[Contest Join]
+
+        T[Contest Capacity Validation]
+
+        V[Redis Distributed Lock]
+
+    end
+
+    E --> R
+    E --> S
+
+    S --> T
+
+    T --> V
+
+    subgraph Wallet_System
+
+        W[Deposit]
+
+        X[Contest Entry]
+
+        Y[Prize Credit]
+
+        Z[(Wallet Ledger)]
+
+    end
+
+    G --> W
+    G --> X
+    G --> Y
+
+    W --> Z
+    X --> Z
+    Y --> Z
+
+    subgraph Real_Time_Updates
+
+        AA[Redis Pub/Sub]
+
+        AB[Socket.IO]
+
+        AC[Connected Users]
+
+    end
+
+    K --> AA
+
+    AA --> AB
+
+    AB --> AC
+
+    subgraph Settlement_System
+
+        AD[Match Completed]
+
+        AE[Finalize Scores]
+
+        AF[Finalize Leaderboards]
+
+        AG[Prize Calculation]
+
+        AH[Wallet Credit]
+
+    end
+
+    AD --> AE
+
+    AE --> AF
+
+    AF --> AG
+
+    AG --> AH
+
+    AH --> Z
+
+    subgraph Notification_System
+
+        AI[RabbitMQ]
+
+        AJ[Email Worker]
+
+        AK[Push Worker]
+
+        AL[SMS Worker]
+
+    end
+
+    AG --> AI
+
+    AI --> AJ
+    AI --> AK
+    AI --> AL
+
+    subgraph Databases
+
+        AM[(Users Database)]
+
+        AN[(Contest Database)]
+
+        AO[(Teams Database)]
+
+        AP[(Match Database)]
+
+    end
+
+    C --> AM
+
+    E --> AN
+
+    F --> AO
+
+    D --> AP
+
+    subgraph Monitoring
+
+        AQ[Prometheus]
+
+        AR[Grafana]
+
+        AS[OpenTelemetry]
+
+    end
+
+    K --> AQ
+
+    H --> AQ
+
+    G --> AQ
+
+    AQ --> AR
+
+    AQ --> AS
+
+    subgraph Security
+
+        AT[JWT Authentication]
+
+        AU[RBAC]
+
+        AV[Rate Limiting]
+
+    end
+
+    B --> AT
+
+    B --> AU
+
+    B --> AV

@@ -1,0 +1,159 @@
+flowchart LR
+
+    A[Sports Data Provider]
+
+    A --> B[Data Ingestion Service]
+
+    B --> C[Kafka Match Events Topic]
+
+    subgraph Event_Streaming
+
+        C --> D[Score Processor]
+
+        C --> E[Statistics Processor]
+
+        C --> F[Commentary Processor]
+
+    end
+
+    subgraph Real_Time_Processing
+
+        D --> G[Live Score Engine]
+
+        E --> H[Player Statistics Engine]
+
+        F --> I[Commentary Engine]
+
+    end
+
+    subgraph Redis_Layer
+
+        J[(Redis Match State)]
+
+        K[(Redis Score Cache)]
+
+        L[(Redis Commentary Cache)]
+
+    end
+
+    G --> J
+    G --> K
+
+    H --> K
+
+    I --> L
+
+    subgraph Socket_IO
+
+        M[Socket.IO Cluster]
+
+        N[Socket Server 1]
+
+        O[Socket Server 2]
+
+        P[Socket Server 3]
+
+    end
+
+    J --> M
+    K --> M
+    L --> M
+
+    M --> N
+    M --> O
+    M --> P
+
+    subgraph End_Users
+
+        Q[Mobile Users]
+
+        R[Web Users]
+
+        S[Fantasy Platform]
+
+    end
+
+    N --> Q
+    O --> R
+    P --> S
+
+    subgraph Persistence
+
+        T[(MySQL Match Database)]
+
+        U[(Historical Statistics)]
+
+    end
+
+    G --> T
+
+    H --> U
+
+    subgraph Notification_System
+
+        V[Important Match Event]
+
+        W[Notification Service]
+
+        X[RabbitMQ]
+
+        Y[Push Notification Worker]
+
+    end
+
+    G --> V
+
+    V --> W
+
+    W --> X
+
+    X --> Y
+
+    subgraph Analytics
+
+        Z[Analytics Consumer]
+
+        AA[Match Analytics]
+
+        AB[User Engagement Metrics]
+
+    end
+
+    C --> Z
+
+    Z --> AA
+
+    Z --> AB
+
+    subgraph Monitoring
+
+        AC[Prometheus]
+
+        AD[Grafana]
+
+        AE[OpenTelemetry]
+
+    end
+
+    D --> AC
+    H --> AC
+    M --> AC
+
+    AC --> AD
+    AC --> AE
+
+    subgraph Scalability
+
+        AF[Kafka Partitions]
+
+        AG[Redis Cluster]
+
+        AH[Socket.IO Horizontal Scaling]
+
+    end
+
+    C --> AF
+
+    J --> AG
+
+    M --> AH

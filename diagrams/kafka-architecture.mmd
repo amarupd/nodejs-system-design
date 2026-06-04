@@ -1,0 +1,109 @@
+flowchart LR
+
+    P1[Order Service]
+    P2[Payment Service]
+    P3[Inventory Service]
+    P4[Match Service]
+
+    P1 --> T1[Orders Topic]
+    P2 --> T2[Payments Topic]
+    P3 --> T3[Inventory Topic]
+    P4 --> T4[Match Events Topic]
+
+    subgraph Kafka_Cluster
+
+        B1[Broker 1]
+        B2[Broker 2]
+        B3[Broker 3]
+
+        subgraph Orders_Topic
+
+            O1[Partition 0]
+            O2[Partition 1]
+            O3[Partition 2]
+
+        end
+
+        subgraph Payments_Topic
+
+            PA1[Partition 0]
+            PA2[Partition 1]
+
+        end
+
+        subgraph Match_Topic
+
+            M1[Partition 0]
+            M2[Partition 1]
+            M3[Partition 2]
+            M4[Partition 3]
+
+        end
+
+    end
+
+    T1 --> O1
+    T1 --> O2
+    T1 --> O3
+
+    T2 --> PA1
+    T2 --> PA2
+
+    T4 --> M1
+    T4 --> M2
+    T4 --> M3
+    T4 --> M4
+
+    subgraph Consumer_Group_A
+
+        C1[Inventory Consumer]
+        C2[Notification Consumer]
+        C3[Analytics Consumer]
+
+    end
+
+    subgraph Consumer_Group_B
+
+        C4[Payment Consumer]
+        C5[Settlement Consumer]
+
+    end
+
+    O1 --> C1
+    O2 --> C2
+    O3 --> C3
+
+    PA1 --> C4
+    PA2 --> C5
+
+    M1 --> C1
+    M2 --> C2
+    M3 --> C3
+    M4 --> C4
+
+    subgraph Event_Replay
+
+        R1[Stored Events]
+        R2[Replay Consumer]
+
+    end
+
+    B1 --> R1
+    R1 --> R2
+
+    subgraph Monitoring
+
+        M5[Consumer Lag]
+        M6[Topic Throughput]
+        M7[Broker Health]
+        M8[Partition Size]
+
+    end
+
+    B1 --> M5
+    B2 --> M6
+    B3 --> M7
+    B1 --> M8
+
+    B1 --> B2
+    B2 --> B3

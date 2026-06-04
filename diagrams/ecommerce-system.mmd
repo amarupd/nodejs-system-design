@@ -1,0 +1,169 @@
+flowchart TB
+
+    U[Customer]
+
+    U --> A[Next.js Storefront]
+
+    A --> B[CDN / CloudFront]
+
+    B --> C[Load Balancer]
+
+    C --> D[API Gateway]
+
+    D --> E[Authentication Service]
+    D --> F[Catalog Service]
+    D --> G[Cart Service]
+    D --> H[Order Service]
+    D --> I[Payment Service]
+    D --> J[Inventory Service]
+    D --> K[Shipment Service]
+    D --> L[Notification Service]
+
+    subgraph Product_Discovery
+
+        F --> M[(MySQL Products)]
+
+        F --> N[(Redis Product Cache)]
+
+        F --> O[Search Engine]
+
+    end
+
+    subgraph Cart_Management
+
+        G --> P[(Redis Cart Store)]
+
+    end
+
+    subgraph Inventory_Management
+
+        J --> Q[(Inventory Database)]
+
+        J --> R[Distributed Lock]
+
+    end
+
+    subgraph Order_Processing
+
+        H --> S[(Orders Database)]
+
+        H --> T[Order Events]
+
+    end
+
+    subgraph Payment_Processing
+
+        I --> U1[Payment Gateway]
+
+        U1 --> V[Bank Network]
+
+        I --> W[(Payment Database)]
+
+    end
+
+    subgraph Shipment_Management
+
+        K --> X[Courier Partner]
+
+        K --> Y[(Shipment Database)]
+
+    end
+
+    subgraph Notification_System
+
+        L --> Z[RabbitMQ]
+
+        Z --> AA[Email Worker]
+
+        Z --> AB[SMS Worker]
+
+        Z --> AC[Push Worker]
+
+    end
+
+    subgraph Event_Driven_Architecture
+
+        AD[Kafka]
+
+        AE[Inventory Consumer]
+
+        AF[Analytics Consumer]
+
+        AG[Notification Consumer]
+
+        AH[Search Index Consumer]
+
+    end
+
+    T --> AD
+
+    AD --> AE
+    AD --> AF
+    AD --> AG
+    AD --> AH
+
+    subgraph Search_Platform
+
+        O --> AI[(Elasticsearch)]
+
+    end
+
+    subgraph Storage
+
+        AJ[AWS S3]
+
+        AK[Product Images]
+
+    end
+
+    AJ --> AK
+
+    subgraph Analytics
+
+        AL[Sales Analytics]
+
+        AM[Customer Analytics]
+
+        AN[Inventory Analytics]
+
+    end
+
+    AF --> AL
+    AF --> AM
+    AF --> AN
+
+    subgraph Monitoring
+
+        AO[Prometheus]
+
+        AP[Grafana]
+
+        AQ[OpenTelemetry]
+
+    end
+
+    E --> AO
+    F --> AO
+    G --> AO
+    H --> AO
+    I --> AO
+
+    AO --> AP
+    AO --> AQ
+
+    subgraph Security
+
+        AR[JWT Authentication]
+
+        AS[RBAC]
+
+        AT[Rate Limiting]
+
+        AU[WAF]
+
+    end
+
+    D --> AR
+    D --> AS
+    D --> AT
+    C --> AU

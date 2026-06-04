@@ -1,0 +1,73 @@
+flowchart TB
+
+    A[Authenticated User]
+
+    A --> B[API Request]
+
+    B --> C[API Gateway]
+
+    C --> D[JWT Authentication Middleware]
+
+    D --> E{Token Valid?}
+
+    E -->|No| F[401 Unauthorized]
+
+    E -->|Yes| G[Extract User Information]
+
+    G --> H[Authorization Middleware]
+
+    H --> I[Load User Roles]
+
+    I --> J[(MySQL Database)]
+
+    J --> K[User Role Data]
+
+    K --> L[Load Permissions]
+
+    L --> M[(RBAC Permission Matrix)]
+
+    M --> N[Permission Evaluation]
+
+    N --> O{Permission Granted?}
+
+    O -->|No| P[403 Forbidden]
+
+    O -->|Yes| Q[Controller Layer]
+
+    Q --> R[Business Logic]
+
+    R --> S[Resource Access]
+
+    S --> T[(Database)]
+
+    T --> U[Response]
+
+    U --> V[User]
+
+    subgraph Authentication
+        D
+        E
+        G
+    end
+
+    subgraph Authorization
+        H
+        I
+        L
+        N
+    end
+
+    subgraph RBAC
+        J
+        M
+    end
+
+    subgraph Application
+        Q
+        R
+        S
+    end
+
+    subgraph Data_Layer
+        T
+    end

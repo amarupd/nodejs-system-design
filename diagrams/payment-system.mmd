@@ -1,0 +1,154 @@
+flowchart TB
+
+    U[User]
+
+    U --> A[Checkout Request]
+
+    A --> B[API Gateway]
+
+    B --> C[Payment Service]
+
+    C --> D[Validate Payment Request]
+
+    D --> E[Generate Idempotency Key]
+
+    E --> F{Already Processed?}
+
+    F -->|Yes| G[Return Existing Response]
+
+    F -->|No| H[Gateway Adapter]
+
+    H --> I[Payment Gateway]
+
+    I --> J[Banking Network]
+
+    J --> K[Payment Response]
+
+    K --> L{Success?}
+
+    L -->|No| M[Payment Failed]
+
+    L -->|Yes| N[Payment Success]
+
+    N --> O[Ledger Service]
+
+    O --> P[Create Debit Entry]
+
+    O --> Q[Create Credit Entry]
+
+    P --> R[(Ledger Database)]
+
+    Q --> R
+
+    N --> S[Kafka Event]
+
+    subgraph Event_Driven_Architecture
+
+        T[Settlement Service]
+
+        U1[Notification Service]
+
+        V[Analytics Service]
+
+        W[Reporting Service]
+
+    end
+
+    S --> T
+    S --> U1
+    S --> V
+    S --> W
+
+    T --> X[Settlement Engine]
+
+    X --> Y[Merchant Settlement]
+
+    Y --> Z[(Settlement Database)]
+
+    U1 --> AA[RabbitMQ]
+
+    AA --> AB[Email Worker]
+
+    AA --> AC[SMS Worker]
+
+    AA --> AD[Push Worker]
+
+    AB --> AE[Email Provider]
+
+    AC --> AF[SMS Provider]
+
+    AD --> AG[Push Provider]
+
+    subgraph Webhook_Processing
+
+        AH[Gateway Webhook]
+
+        AI[Webhook Controller]
+
+        AJ[Idempotent Validation]
+
+        AK[Update Payment Status]
+
+    end
+
+    I --> AH
+
+    AH --> AI
+
+    AI --> AJ
+
+    AJ --> AK
+
+    AK --> C
+
+    subgraph Fraud_Detection
+
+        AL[Risk Engine]
+
+        AM[Velocity Checks]
+
+        AN[Device Fingerprint]
+
+        AO[Fraud Score]
+
+    end
+
+    C --> AL
+
+    AL --> AM
+    AL --> AN
+    AM --> AO
+    AN --> AO
+
+    AO --> D
+
+    subgraph Redis
+
+        AP[Idempotency Keys]
+
+        AQ[Rate Limits]
+
+        AR[Sessions]
+
+    end
+
+    C --> AP
+    B --> AQ
+    U --> AR
+
+    subgraph Monitoring
+
+        AS[Payment Success Rate]
+
+        AT[Gateway Latency]
+
+        AU[Refund Rate]
+
+        AV[Webhook Errors]
+
+    end
+
+    C --> AS
+    I --> AT
+    T --> AU
+    AI --> AV

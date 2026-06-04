@@ -1,0 +1,89 @@
+flowchart TB
+
+    A[JavaScript Code Execution]
+
+    A --> B[Call Stack]
+
+    B --> C{Async Operation?}
+
+    C -->|No| D[Execute Immediately]
+
+    C -->|Yes| E[Node.js APIs]
+
+    E --> F[Libuv]
+
+    F --> G[Thread Pool]
+
+    G --> H[Operation Complete]
+
+    H --> I[Callback Queue]
+
+    I --> J[Event Loop]
+
+    J --> K{Call Stack Empty?}
+
+    K -->|No| J
+
+    K -->|Yes| L[Move Callback To Call Stack]
+
+    L --> M[Execute Callback]
+
+    M --> J
+
+    subgraph Event_Loop_Phases
+
+        N[Timers Phase]
+
+        O[Pending Callbacks]
+
+        P[Idle / Prepare]
+
+        Q[Poll Phase]
+
+        R[Check Phase]
+
+        S[Close Callbacks]
+
+    end
+
+    J --> N
+    N --> O
+    O --> P
+    P --> Q
+    Q --> R
+    R --> S
+    S --> N
+
+    subgraph Microtask_Queue
+
+        T[Promises]
+
+        U[process.nextTick]
+
+    end
+
+    M --> T
+
+    T --> U
+
+    U --> J
+
+    subgraph Async_Operations
+
+        V[File System]
+
+        W[Database Calls]
+
+        X[Network Requests]
+
+        Y[DNS Resolution]
+
+        Z[Crypto Operations]
+
+    end
+
+    V --> G
+    W --> G
+    X --> G
+    Y --> G
+    Z --> G

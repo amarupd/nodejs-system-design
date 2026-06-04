@@ -1,0 +1,77 @@
+flowchart TB
+
+    A[User]
+
+    A --> B[Login Request]
+
+    B --> C[API Gateway]
+
+    C --> D[Authentication Controller]
+
+    D --> E[Validate Request]
+
+    E --> F{Valid Input?}
+
+    F -->|No| G[Return Validation Error]
+
+    F -->|Yes| H[User Service]
+
+    H --> I[(MySQL Database)]
+
+    I --> J[Fetch User]
+
+    J --> K{User Exists?}
+
+    K -->|No| L[Return Invalid Credentials]
+
+    K -->|Yes| M[Verify Password Hash]
+
+    M --> N{Password Match?}
+
+    N -->|No| O[Return Invalid Credentials]
+
+    N -->|Yes| P[Generate JWT Access Token]
+
+    P --> Q[Generate Refresh Token]
+
+    Q --> R[(Redis Session Store)]
+
+    R --> S[Store Refresh Token]
+
+    S --> T[Build Auth Response]
+
+    T --> U[Return Access Token]
+
+    U --> V[Client Stores Token]
+
+    V --> W[Authenticated Requests]
+
+    W --> X[Authorization Middleware]
+
+    X --> Y[Verify JWT]
+
+    Y --> Z{Token Valid?}
+
+    Z -->|No| AA[401 Unauthorized]
+
+    Z -->|Yes| AB[Allow Access]
+
+    subgraph Authentication_Process
+        D
+        E
+        H
+        M
+        P
+        Q
+    end
+
+    subgraph Storage
+        I
+        R
+    end
+
+    subgraph Protected_APIs
+        X
+        Y
+        AB
+    end

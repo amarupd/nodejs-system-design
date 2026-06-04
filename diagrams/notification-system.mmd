@@ -1,0 +1,122 @@
+flowchart LR
+
+    A[Application Event]
+
+    A --> B[Notification Service]
+
+    B --> C[Template Engine]
+
+    C --> D[User Preference Service]
+
+    D --> E{Channel Enabled?}
+
+    E -->|Email| F[Email Queue]
+
+    E -->|SMS| G[SMS Queue]
+
+    E -->|Push| H[Push Queue]
+
+    E -->|In App| I[In App Queue]
+
+    subgraph RabbitMQ
+
+        F
+        G
+        H
+        I
+
+    end
+
+    F --> J[Email Worker]
+
+    G --> K[SMS Worker]
+
+    H --> L[Push Worker]
+
+    I --> M[In App Worker]
+
+    J --> N[SendGrid / SES]
+
+    K --> O[Twilio / MSG91]
+
+    L --> P[FCM / APNS]
+
+    M --> Q[(Notification Database)]
+
+    N --> R[Delivery Status]
+
+    O --> R
+
+    P --> R
+
+    Q --> R
+
+    R --> S[(Notification Logs)]
+
+    subgraph Retry_System
+
+        T[Failed Delivery]
+
+        U[Retry Queue]
+
+        V[Retry Worker]
+
+    end
+
+    J --> T
+    K --> T
+    L --> T
+
+    T --> U
+
+    U --> V
+
+    V --> F
+    V --> G
+    V --> H
+
+    subgraph Dead_Letter_Queue
+
+        W[DLQ]
+
+        X[Manual Investigation]
+
+    end
+
+    T --> W
+
+    W --> X
+
+    subgraph Analytics
+
+        Y[Delivery Rate]
+
+        Z[Open Rate]
+
+        AA[Click Rate]
+
+        AB[Failure Rate]
+
+    end
+
+    S --> Y
+    S --> Z
+    S --> AA
+    S --> AB
+
+    subgraph Notification_Events
+
+        AC[ORDER_CREATED]
+
+        AD[PAYMENT_SUCCESS]
+
+        AE[MATCH_STARTED]
+
+        AF[PASSWORD_RESET]
+
+    end
+
+    AC --> A
+    AD --> A
+    AE --> A
+    AF --> A

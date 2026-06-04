@@ -1,0 +1,176 @@
+# =========================
+
+# Dependencies
+
+# =========================
+
+node_modules/
+jspm_packages/
+bower_components/
+
+# =========================
+
+# Logs
+
+# =========================
+
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+
+# Runtime Data
+
+# =========================
+
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# =========================
+
+# Coverage
+
+# =========================
+
+coverage/
+.nyc_output/
+
+# =========================
+
+# Build Output
+
+# =========================
+
+dist/
+build/
+out/
+.next/
+.cache/
+tmp/
+temp/
+
+# =========================
+
+# Environment Variables
+
+# =========================
+
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================
+
+# IDE
+
+# =========================
+
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# =========================
+
+# OS Files
+
+# =========================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+
+# Docker
+
+# =========================
+
+docker-compose.override.yml
+
+# =========================
+
+# Kubernetes
+
+# =========================
+
+*.kubeconfig
+
+# =========================
+
+# Terraform
+
+# =========================
+
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# =========================
+
+# AWS
+
+# =========================
+
+.aws/
+.aws-sam/
+
+# =========================
+
+# Secrets
+
+# =========================
+
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# =========================
+
+# Editors
+
+# =========================
+
+*.orig
+*.rej
+
+# =========================
+
+# Mermaid Generated Files
+
+# =========================
+
+*.svg
+*.pdf
+*.png
+
+# Keep repository assets
+
+!assets/*.png
+
+# =========================
+
+# Misc
+
+# =========================
+
+*.bak
+*.tmp
+*.temp
+*.cache

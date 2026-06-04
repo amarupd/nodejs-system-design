@@ -1,0 +1,80 @@
+flowchart TB
+
+    A[Client Request]
+
+    A --> B[API Gateway]
+
+    B --> C[Rate Limiting Middleware]
+
+    C --> D[Extract Client Identifier]
+
+    D --> E{Identifier Type}
+
+    E --> F[User ID]
+    E --> G[IP Address]
+    E --> H[API Key]
+
+    F --> I[Redis Lookup]
+    G --> I
+    H --> I
+
+    I --> J{Counter Exists?}
+
+    J -->|No| K[Create Counter]
+
+    K --> L[Set TTL Window]
+
+    L --> M[Allow Request]
+
+    J -->|Yes| N[Increment Counter]
+
+    N --> O{Limit Exceeded?}
+
+    O -->|No| M
+
+    O -->|Yes| P[429 Too Many Requests]
+
+    M --> Q[Application Controller]
+
+    Q --> R[Business Logic]
+
+    R --> S[Response]
+
+    S --> T[Client]
+
+    P --> T
+
+    subgraph Redis_Rate_Limit_Store
+        I
+        K
+        L
+        N
+    end
+
+    subgraph Request_Processing
+        Q
+        R
+        S
+    end
+
+    subgraph Rate_Limit_Strategies
+        U[Fixed Window]
+        V[Sliding Window]
+        W[Token Bucket]
+        X[Leaky Bucket]
+    end
+
+    U --> I
+    V --> I
+    W --> I
+    X --> I
+
+    subgraph Protection
+        Y[API Abuse Prevention]
+        Z[DDoS Mitigation]
+        AA[Brute Force Protection]
+    end
+
+    M --> Y
+    M --> Z
+    M --> AA

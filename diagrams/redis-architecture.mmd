@@ -1,0 +1,115 @@
+flowchart LR
+
+    U[Client Request]
+
+    U --> A[Application Service]
+
+    A --> B{Cache Hit?}
+
+    B -->|Yes| C[(Redis Cache)]
+
+    C --> D[Return Response]
+
+    D --> U
+
+    B -->|No| E[(MySQL Database)]
+
+    E --> F[Fetch Data]
+
+    F --> G[Store In Redis]
+
+    G --> H[(Redis Cache)]
+
+    H --> D
+
+    subgraph Redis_Use_Cases
+
+        I[Product Cache]
+
+        J[User Sessions]
+
+        K[Shopping Cart]
+
+        L[Rate Limiting]
+
+        M[Leaderboards]
+
+        N[Distributed Locks]
+
+        O[Pub Sub]
+
+        P[Temporary Data]
+
+    end
+
+    H --> I
+    H --> J
+    H --> K
+    H --> L
+    H --> M
+    H --> N
+    H --> O
+    H --> P
+
+    subgraph Distributed_Locking
+
+        Q[Acquire Lock]
+
+        R[Process Request]
+
+        S[Release Lock]
+
+    end
+
+    N --> Q
+    Q --> R
+    R --> S
+
+    subgraph Pub_Sub
+
+        T[Publisher]
+
+        U1[Redis Channel]
+
+        V[Subscriber A]
+
+        W[Subscriber B]
+
+        X[Subscriber C]
+
+    end
+
+    T --> U1
+
+    U1 --> V
+    U1 --> W
+    U1 --> X
+
+    subgraph Infrastructure
+
+        Y[(Redis Primary)]
+
+        Z[(Redis Replica)]
+
+    end
+
+    Y --> Z
+
+    A --> Y
+
+    subgraph Monitoring
+
+        AA[Memory Usage]
+
+        AB[Hit Ratio]
+
+        AC[Evictions]
+
+        AD[Latency]
+
+    end
+
+    Y --> AA
+    Y --> AB
+    Y --> AC
+    Y --> AD

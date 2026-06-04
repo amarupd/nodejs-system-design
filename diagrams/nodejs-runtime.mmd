@@ -1,0 +1,66 @@
+flowchart TB
+
+    A[Node.js Application]
+
+    A --> B[V8 JavaScript Engine]
+    A --> C[Node.js APIs]
+    A --> D[Event Loop]
+    A --> E[Libuv]
+
+    B --> F[Execute JavaScript]
+
+    C --> G[File System]
+    C --> H[HTTP]
+    C --> I[Crypto]
+    C --> J[Timers]
+
+    E --> K[Thread Pool]
+    E --> L[OS Kernel]
+
+    K --> M[File Operations]
+    K --> N[DNS Resolution]
+    K --> O[Compression]
+    K --> P[Crypto Tasks]
+
+    D --> Q[Timers Phase]
+    D --> R[Pending Callbacks]
+    D --> S[Idle / Prepare]
+    D --> T[Poll Phase]
+    D --> U[Check Phase]
+    D --> V[Close Callbacks]
+
+    T --> W[I/O Callbacks]
+    U --> X[setImmediate]
+
+    F --> Y[Call Stack]
+
+    Y --> Z[JavaScript Runtime]
+
+    W --> AA[Callback Queue]
+
+    AA --> D
+
+    subgraph Runtime
+        B
+        C
+        D
+        E
+    end
+
+    subgraph Async_Operations
+        K
+        L
+        M
+        N
+        O
+        P
+    end
+
+    subgraph Event_Loop_Phases
+        Q
+        R
+        S
+        T
+        U
+        V
+    end

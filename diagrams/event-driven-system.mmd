@@ -1,0 +1,160 @@
+flowchart LR
+
+    A[User Action]
+
+    A --> B[Order Service]
+
+    B --> C[Create Business Event]
+
+    C --> D[Kafka Topic]
+
+    subgraph Event_Bus
+
+        D
+
+    end
+
+    subgraph Producers
+
+        E[Order Service]
+
+        F[Payment Service]
+
+        G[Inventory Service]
+
+        H[User Service]
+
+    end
+
+    E --> D
+    F --> D
+    G --> D
+    H --> D
+
+    subgraph Consumers
+
+        I[Notification Service]
+
+        J[Analytics Service]
+
+        K[Search Service]
+
+        L[Audit Service]
+
+        M[Recommendation Service]
+
+    end
+
+    D --> I
+    D --> J
+    D --> K
+    D --> L
+    D --> M
+
+    subgraph Notification_Flow
+
+        N[RabbitMQ]
+
+        O[Email Worker]
+
+        P[SMS Worker]
+
+        Q[Push Worker]
+
+    end
+
+    I --> N
+
+    N --> O
+    N --> P
+    N --> Q
+
+    subgraph Analytics_Pipeline
+
+        R[Stream Processing]
+
+        S[Data Warehouse]
+
+        T[Business Reports]
+
+    end
+
+    J --> R
+
+    R --> S
+
+    S --> T
+
+    subgraph Search_Indexing
+
+        U[Index Consumer]
+
+        V[Elasticsearch]
+
+    end
+
+    K --> U
+
+    U --> V
+
+    subgraph Audit_System
+
+        W[Audit Events]
+
+        X[(Audit Database)]
+
+    end
+
+    L --> W
+
+    W --> X
+
+    subgraph Event_Replay
+
+        Y[Stored Events]
+
+        Z[Replay Consumer]
+
+    end
+
+    D --> Y
+
+    Y --> Z
+
+    Z --> I
+    Z --> J
+    Z --> K
+
+    subgraph Reliability
+
+        AA[Retry Logic]
+
+        AB[Dead Letter Queue]
+
+        AC[Idempotent Consumers]
+
+    end
+
+    I --> AA
+    J --> AA
+    K --> AA
+
+    AA --> AB
+
+    D --> AC
+
+    subgraph Monitoring
+
+        AD[Consumer Lag]
+
+        AE[Event Throughput]
+
+        AF[Failure Rate]
+
+    end
+
+    D --> AD
+
+    D --> AE
+
+    AA --> AF
