@@ -1,6 +1,6 @@
 # 🚀 Node.js System Design
 
-![Architecture](assets/architecture.png)
+![Architecture](assets/banner.png)
 
 > Production-Grade Node.js System Design, Backend Architecture, Distributed Systems, Scalability Patterns, and Real-World Engineering Case Studies.
 
